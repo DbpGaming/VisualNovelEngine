@@ -21,13 +21,26 @@ void renderimage(char *image, float y, float x, float w, float h) {
 	SDL_RenderCopy(renderer, Test, NULL, &position);
 }
 
-void rendertext(char *text, int y, int x, char *font, int fontsize, short r, short g, short b, short a) {
+void rendertext(char *text, float y, float x, char *font, int fontsize, short r, short g, short b, short a) {
 	SDL_Rect position;
-	position.y = y;
-	position.x = x;
 	TTF_Font *fonttest = TTF_OpenFont(font, fontsize);
 	SDL_Color texcolour = { r, g, b, a };
 	SDL_Surface* surf = TTF_RenderText_Blended(fonttest, text, texcolour);
+	position.y = (y * Resolution.h) - surf->h/2;
+	position.x = (x * Resolution.w) -  surf->w/2;
+	TestText = SDL_CreateTextureFromSurface(renderer, surf);
+	SDL_FreeSurface(surf);
+	SDL_QueryTexture(TestText, NULL, NULL, &position.w, &position.h);
+	SDL_RenderCopy(renderer, TestText, NULL, &position);
+}
+
+void rendertextboxtext(char *text, float y, float x, char *font, int fontsize, short r, short g, short b, short a) {
+	SDL_Rect position;
+	TTF_Font *fonttest = TTF_OpenFont(font, fontsize);
+	SDL_Color texcolour = { r, g, b, a };
+	SDL_Surface* surf = TTF_RenderText_Blended(fonttest, text, texcolour);
+	position.y = y * Resolution.h;
+	position.x = (x * Resolution.h * 16 / 9) + (Resolution.w - Resolution.h * 16 / 9) / 2;
 	TestText = SDL_CreateTextureFromSurface(renderer, surf);
 	SDL_FreeSurface(surf);
 	SDL_QueryTexture(TestText, NULL, NULL, &position.w, &position.h);
@@ -37,8 +50,8 @@ void rendertext(char *text, int y, int x, char *font, int fontsize, short r, sho
 int main(int argc, char *argv[])
 {
 	
-	Resolution.w = 3000;
-	Resolution.h = 1000;
+	Resolution.w = 2160;
+	Resolution.h = 1080;
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	TTF_Init();
@@ -50,8 +63,9 @@ int main(int argc, char *argv[])
 	SDL_RenderClear(renderer);
 	renderimage("amane.png", 0.5, 0.25, 0.396, 0.766);
 	renderimage("miharu.png", 0.5, 0.75, 0.447, 0.875);
-	rendertext("test", 50, 50, "Arial.ttf", 16, 0xFF, 0xFF, 0xFF, 0xFF);
-	rendertext("FUCK YOU BEAR", 50, 100, "Arial.ttf", 160, 0, 0xFF, 0, 0xFF);
+	rendertext("test", 0.1, 0.2, "Arial.ttf", 16, 0xFF, 0xFF, 0xFF, 0xFF);
+	rendertext("FUCK YOU BEAR", 0.1, 0.1, "Arial.ttf", 160, 0, 0xFF, 0, 0xFF);
+	rendertextboxtext("FUCK YOU BEAR", 0.5, 0, "Arial.ttf", 160, 0, 0xFF, 0, 0xFF);
 	SDL_RenderPresent(renderer);
 	SDL_Delay(30000);
 
