@@ -34,13 +34,13 @@ void rendertext(char *text, float y, float x, char *font, int fontsize, short r,
 	SDL_RenderCopy(renderer, TestText, NULL, &position);
 }
 
-void rendertextboxtext(char *text, float y, float x, char *font, int fontsize, short r, short g, short b, short a) {
+void rendertextboxtext(char *text, float y, float x, char *font, int fontsize, short r, short g, short b, short a, int textwidth, float size) {
 	SDL_Rect position;
 	TTF_Font *fonttest = TTF_OpenFont(font, fontsize);
 	SDL_Color texcolour = { r, g, b, a };
-	SDL_Surface* surf = TTF_RenderText_Blended(fonttest, text, texcolour);
-	position.y = y * Resolution.h;
-	position.x = (x * Resolution.h * 16 / 9) + (Resolution.w - Resolution.h * 16 / 9) / 2;
+	SDL_Surface* surf = TTF_RenderText_Blended_Wrapped(fonttest, text, texcolour, textwidth);
+	position.y = (y*Resolution.h)-surf->h/2;
+	position.x = ((x*Resolution.h*16/9)+(Resolution.w-Resolution.h*16/9)/2)-surf->w/2;
 	TestText = SDL_CreateTextureFromSurface(renderer, surf);
 	SDL_FreeSurface(surf);
 	SDL_QueryTexture(TestText, NULL, NULL, &position.w, &position.h);
@@ -50,7 +50,7 @@ void rendertextboxtext(char *text, float y, float x, char *font, int fontsize, s
 int main(int argc, char *argv[])
 {
 	
-	Resolution.w = 2160;
+	Resolution.w = 1920;
 	Resolution.h = 1080;
 
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	renderimage("miharu.png", 0.5, 0.75, 0.447, 0.875);
 	rendertext("test", 0.1, 0.2, "Arial.ttf", 16, 0xFF, 0xFF, 0xFF, 0xFF);
 	rendertext("FUCK YOU BEAR", 0.1, 0.1, "Arial.ttf", 160, 0, 0xFF, 0, 0xFF);
-	rendertextboxtext("FUCK YOU BEAR", 0.5, 0, "Arial.ttf", 160, 0, 0xFF, 0, 0xFF);
+	rendertextboxtext("just a really long ass thing to test wrapping because i need to see how well sdl handles wrapping on its own lol, \nhopefully its decent and hopefully it if it does something like center the text i can change that", 0.9, 0.5, "Arial.ttf", 40, 0, 0xFF, 0, 0xFF, 1280, 0.1);
 	SDL_RenderPresent(renderer);
 	SDL_Delay(30000);
 
