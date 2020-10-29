@@ -60,3 +60,4 @@ dkms.conf
 *.filters
 *.bak
 .vscode/
+sdl2-config
