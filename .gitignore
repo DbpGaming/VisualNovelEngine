@@ -58,3 +58,5 @@ dkms.conf
 *.vcxproj
 *.user
 *.filters
+*.bak
+.vscode/
